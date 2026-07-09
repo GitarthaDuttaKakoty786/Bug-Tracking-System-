@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BugTrack — BUG-0231</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="logo"><span class="bracket">&lt;/&gt;</span> BugTrack</div>
+
+    <nav>
+      <div class="nav-group-label">Menu</div>
+      <ul>
+        <li><a href="index.html" class="nav-link"><span class="icon">#</span> Dashboard</a></li>
+        <li><a href="bugs.html" class="nav-link active"><span class="icon">!</span> All Bugs</a></li>
+        <li><a href="report-bug.html" class="nav-link"><span class="icon">+</span> Report Bug</a></li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">Logged in as A. Sharma</div>
+  </aside>
+
+  <main class="main">
+
+    <div class="topbar">
+      <div>
+        <h1>Bug Detail</h1>
+        <div class="subtitle">Full information, history and discussion for this bug</div>
+      </div>
+      <a href="bugs.html" class="btn btn-secondary">&larr; Back to All Bugs</a>
+    </div>
+
+    <div class="window">
+      <div class="window-titlebar">
+        <div class="dots">
+          <span class="dot red"></span>
+          <span class="dot amber"></span>
+          <span class="dot green"></span>
+        </div>
+        <span class="window-title">bugtrack — BUG-0231</span>
+      </div>
+
+      <div class="window-body">
+
+        <div class="detail-header">
+          <div>
+            <span class="bug-id">BUG-0231</span>
+            <h2>Login button unresponsive on Safari</h2>
+            <div class="meta-row">
+              <span class="badge critical"><span class="dot-indicator"></span>Critical</span>
+              <span class="badge status-open">Open</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="meta-grid">
+          <div class="meta-item">
+            <div class="label">Reported By</div>
+            <div class="value">S. Verma</div>
+          </div>
+          <div class="meta-item">
+            <div class="label">Assigned To</div>
+            <div class="value">A. Sharma</div>
+          </div>
+          <div class="meta-item">
+            <div class="label">Reported On</div>
+            <div class="value">02 Jul 2026</div>
+          </div>
+          <div class="meta-item">
+            <div class="label">Sprint</div>
+            <div class="value">Sprint 14</div>
+          </div>
+        </div>
+
+        <div class="detail-block">
+          <h3>Description</h3>
+          <p>The login button does not respond to clicks when using Safari on macOS. The page does not show any error, and the network tab shows no request being sent. The issue does not occur on Chrome or Firefox.</p>
+        </div>
+
+        <div class="detail-block">
+          <h3>Steps to Reproduce</h3>
+          <ol>
+            <li>Open the application in Safari on macOS.</li>
+            <li>Go to the login page.</li>
+            <li>Enter valid credentials.</li>
+            <li>Click the "Login" button.</li>
+          </ol>
+        </div>
+
+        <div class="detail-block">
+          <h3>Expected vs Actual</h3>
+          <p><strong>Expected:</strong> User is logged in and redirected to the dashboard.<br>
+             <strong>Actual:</strong> Nothing happens. The button shows a hover state but no click event fires.</p>
+        </div>
+
+        <div class="detail-block">
+          <h3>Comments</h3>
+
+          <div class="comment">
+            <div class="avatar">SV</div>
+            <div>
+              <span class="comment-author">S. Verma</span><span class="comment-time">02 Jul 2026, 11:04 AM</span>
+              <div class="comment-body">Confirmed on Safari 17.4. Doesn't happen on Safari on iOS, only macOS.</div>
+            </div>
+          </div>
+
+          <div class="comment">
+            <div class="avatar">AS</div>
+            <div>
+              <span class="comment-author">A. Sharma</span><span class="comment-time">02 Jul 2026, 02:30 PM</span>
+              <div class="comment-body">Looking into it now — might be related to the event listener not being attached properly on WebKit.</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>

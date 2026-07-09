@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BugTrack — All Bugs</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="logo"><span class="bracket">&lt;/&gt;</span> BugTrack</div>
+
+    <nav>
+      <div class="nav-group-label">Menu</div>
+      <ul>
+        <li><a href="index.html" class="nav-link"><span class="icon">#</span> Dashboard</a></li>
+        <li><a href="bugs.html" class="nav-link active"><span class="icon">!</span> All Bugs</a></li>
+        <li><a href="report-bug.html" class="nav-link"><span class="icon">+</span> Report Bug</a></li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">Logged in as A. Sharma</div>
+  </aside>
+
+  <main class="main">
+
+    <div class="topbar">
+      <div>
+        <h1>All Bugs</h1>
+        <div class="subtitle">Every bug reported across the project</div>
+      </div>
+      <a href="report-bug.html" class="btn btn-primary">+ Report Bug</a>
+    </div>
+
+    <div class="window">
+      <div class="window-titlebar">
+        <div class="dots">
+          <span class="dot red"></span>
+          <span class="dot amber"></span>
+          <span class="dot green"></span>
+        </div>
+        <span class="window-title">bugtrack — all-bugs</span>
+      </div>
+
+      <div class="window-body">
+
+        <table class="bug-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Severity</th>
+              <th>Status</th>
+              <th>Assignee</th>
+              <th>Reported On</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="bug-id">BUG-0231</td>
+              <td class="bug-title-cell"><a href="bug-detail.html">Login button unresponsive on Safari</a></td>
+              <td><span class="badge critical"><span class="dot-indicator"></span>Critical</span></td>
+              <td><span class="badge status-open">Open</span></td>
+              <td>A. Sharma</td>
+              <td>02 Jul 2026</td>
+            </tr>
+            <tr>
+              <td class="bug-id">BUG-0229</td>
+              <td class="bug-title-cell"><a href="bug-detail.html">Dashboard chart overflows on mobile</a></td>
+              <td><span class="badge high"><span class="dot-indicator"></span>High</span></td>
+              <td><span class="badge status-progress">In Progress</span></td>
+              <td>R. Iyer</td>
+              <td>29 Jun 2026</td>
+            </tr>
+            <tr>
+              <td class="bug-id">BUG-0224</td>
+              <td class="bug-title-cell"><a href="bug-detail.html">Typo in email notification subject</a></td>
+              <td><span class="badge low"><span class="dot-indicator"></span>Low</span></td>
+              <td><span class="badge status-resolved">Resolved</span></td>
+              <td>M. Khan</td>
+              <td>24 Jun 2026</td>
+            </tr>
+            <tr>
+              <td class="bug-id">BUG-0221</td>
+              <td class="bug-title-cell"><a href="bug-detail.html">Duplicate bug entries after refresh</a></td>
+              <td><span class="badge medium"><span class="dot-indicator"></span>Medium</span></td>
+              <td><span class="badge status-progress">In Progress</span></td>
+              <td>A. Sharma</td>
+              <td>21 Jun 2026</td>
+            </tr>
+            <tr>
+              <td class="bug-id">BUG-0219</td>
+              <td class="bug-title-cell"><a href="bug-detail.html">Comment box loses text on submit</a></td>
+              <td><span class="badge high"><span class="dot-indicator"></span>High</span></td>
+              <td><span class="badge status-open">Open</span></td>
+              <td>S. Verma</td>
+              <td>18 Jun 2026</td>
+            </tr>
+            <tr>
+              <td class="bug-id">BUG-0212</td>
+              <td class="bug-title-cell"><a href="bug-detail.html">Attachment upload fails above 5MB</a></td>
+              <td><span class="badge critical"><span class="dot-indicator"></span>Critical</span></td>
+              <td><span class="badge status-resolved">Resolved</span></td>
+              <td>R. Iyer</td>
+              <td>10 Jun 2026</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>
