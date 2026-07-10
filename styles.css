@@ -1,12 +1,6 @@
-/* ==========================================================================
-   BUGTRACK — Stylesheet
-   Theme idea: a "debugging console" — the whole app looks like a dark
-   terminal/IDE window, since the users (developers & testers) live in one
-   all day. Every screen is wrapped in a fake terminal window with
-   red/amber/green dots at the top, like a real code editor.
-   ========================================================================== */
 
-/* -------------------- Design tokens -------------------- */
+
+/*  Design tokens */
 :root {
   /* backgrounds */
   --bg: #10131a;
@@ -67,13 +61,13 @@ ul {
   list-style: none;
 }
 
-/* -------------------- App layout: sidebar + main -------------------- */
+/*App layout: sidebar + main  */
 .app {
   display: flex;
   min-height: 100vh;
 }
 
-/* ---- Sidebar ---- */
+/*  Sidebar  */
 .sidebar {
   width: 240px;
   flex-shrink: 0;
@@ -92,7 +86,7 @@ ul {
   letter-spacing: -0.02em;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 8px; 
   padding: 0 10px;
 }
 
@@ -128,7 +122,7 @@ ul {
   text-align: center;
 }
 
-/* Sliding accent bar that reveals on hover / active — signature micro-interaction */
+/* Sliding accent bar that reveals on hover  */
 .nav-link::before {
   content: "";
   position: absolute;
@@ -165,7 +159,7 @@ ul {
   color: var(--text-faint);
 }
 
-/* ---- Main column ---- */
+/* Main column  */
 .main {
   flex: 1;
   padding: 28px 40px;
@@ -192,7 +186,7 @@ ul {
   margin-top: 2px;
 }
 
-/* -------------------- Buttons -------------------- */
+/* Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -228,9 +222,7 @@ ul {
   transform: translateY(-2px);
 }
 
-/* -------------------- The "terminal window" wrapper --------------------
-   This is the signature visual element: every page's content sits inside
-   a fake code-editor window, with the classic three dots up top. */
+/*  The "terminal window" wrapper  */
 .window {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -286,7 +278,7 @@ ul {
   padding: 26px;
 }
 
-/* -------------------- Stat cards (dashboard) -------------------- */
+/*  Stat cards (dashboard)  */
 .stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -325,7 +317,7 @@ ul {
 .stat-card.progress .value { color: var(--progress); }
 .stat-card.resolved .value { color: var(--resolved); }
 
-/* -------------------- Progress bar -------------------- */
+/* Progress bar  */
 .progress-block {
   margin-bottom: 28px;
 }
@@ -359,7 +351,7 @@ ul {
   to { width: var(--target); }
 }
 
-/* -------------------- Bug table -------------------- */
+/*  Bug table */
 .section-heading {
   font-family: var(--font-display);
   font-size: 1rem;
@@ -420,7 +412,7 @@ ul {
   color: var(--accent);
 }
 
-/* -------------------- Badges (severity + status) -------------------- */
+/* Badges (severity + status) - */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -460,7 +452,7 @@ ul {
   50% { box-shadow: 0 0 0 5px rgba(255, 92, 114, 0); }
 }
 
-/* -------------------- Forms (Report Bug page) -------------------- */
+/*  Forms (Report Bug page) */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -546,7 +538,7 @@ select:focus {
   margin-top: 10px;
 }
 
-/* -------------------- Bug detail page -------------------- */
+/* Bug detail page */
 .detail-header {
   display: flex;
   justify-content: space-between;
@@ -622,7 +614,7 @@ select:focus {
   color: var(--medium);
 }
 
-/* -------------------- Comment thread -------------------- */
+/*  Comment thread  */
 .comment {
   display: flex;
   gap: 14px;
@@ -667,7 +659,7 @@ select:focus {
   margin-top: 4px;
 }
 
-/* -------------------- Shared entrance animation -------------------- */
+/*  Shared entrance animation*/
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -679,7 +671,7 @@ select:focus {
   }
 }
 
-/* -------------------- Responsive -------------------- */
+/*  Responsive*/
 @media (max-width: 900px) {
   .sidebar { display: none; }
   .stats { grid-template-columns: repeat(2, 1fr); }
@@ -687,7 +679,7 @@ select:focus {
   .meta-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* -------------------- Reduced motion -------------------- */
+/*  Reduced motion  */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
