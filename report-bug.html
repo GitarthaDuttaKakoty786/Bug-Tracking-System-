@@ -26,7 +26,11 @@
       </ul>
     </nav>
 
-    <div class="sidebar-footer">Logged in as A. Sharma</div>
+    <!-- <div class="sidebar-footer">Logged in as A. Sharma</div>-->
+    <div class="sidebar-footer">
+  Logged in as A. Sharma
+  <button class="power-btn" onclick="logout()" style="margin-top:8px;">⏻ Log Out</button>
+</div>
   </aside>
 
   <main class="main">
@@ -127,6 +131,7 @@
 
   </main>
 </div>
-
+<script src="script.js"></script>
+<script>requireLogin();</script>
 </body>
 </html>

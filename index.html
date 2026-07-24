@@ -27,9 +27,14 @@
         <li><a href="report-bug.html" class="nav-link"><span class="icon">+</span> Report Bug</a></li>
       </ul>
     </nav>
+    <div class="sidebar-footer">
+  Logged in as A. Sharma
+  <button class="power-btn" onclick="logout()" style="margin-top:8px;">⏻ Log Out</button>
+</div>
  
-    <div class="sidebar-footer">Logged in as A. Sharma</div>
-  </aside>
+    <!--<div class="sidebar-footer">Logged in as A. Sharma</div>-->
+  </aside> 
+  
 
   <!--  MAIN CONTENT -->
   <main class="main">
@@ -143,6 +148,7 @@
 
   </main>
 </div>
-
+  <script src="script.js"></script>
+<script>requireLogin();</script>
 </body>
 </html>

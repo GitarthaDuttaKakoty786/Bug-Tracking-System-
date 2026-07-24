@@ -26,7 +26,11 @@
       </ul>
     </nav>
 
-    <div class="sidebar-footer">Logged in as A. Sharma</div>
+   <!--<div class="sidebar-footer">Logged in as A. Sharma</div> --> 
+   <div class="sidebar-footer">
+  Logged in as A. Sharma
+  <button class="power-btn" onclick="logout()" style="margin-top:8px;">⏻ Log Out</button>
+</div>
   </aside>
 
   <main class="main">
@@ -50,7 +54,10 @@
       </div>
 
       <div class="window-body">
-
+        <div class="search-box" style="margin-bottom: 18px;">
+  <span class="icon">⌕</span>
+  <input type="text" id="searchInput" placeholder="Search bugs...">
+</div>
         <table class="bug-table">
           <thead>
             <tr>
@@ -119,6 +126,7 @@
 
   </main>
 </div>
-
+  <script src="script.js"></script>
+<script>requireLogin();</script>
 </body>
 </html>
