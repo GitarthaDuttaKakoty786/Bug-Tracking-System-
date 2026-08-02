@@ -1,118 +1,259 @@
-// ============ 1. LOGIN ============
-// Runs only on login.html, because loginForm only exists there
-const loginForm = document.getElementById("loginForm");
+// ============ CONFIG ============
+const API_BASE = "http://localhost:5000/api";
 
-if (loginForm) {
-  loginForm.addEventListener("submit", function (event) {
-    event.preventDefault(); // stops the page from reloading on submit
-
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const errorBox = document.getElementById("loginError");
-
-    // Hardcoded demo check — no backend, just for the evaluation
-    if (email === "demo@bugtrack.com" && password === "demo123") {
-      localStorage.setItem("loggedIn", "true"); // remembers login across pages
-      window.location.href = "index.html";
-    } else {
-      errorBox.textContent = "Invalid email or password.";
-      errorBox.classList.add("show");
-    }
-  });
-}
-
-// ============ 2. PROTECT PAGES + LOGOUT ============
-// Call requireLogin() at the top of any page that needs a logged-in user
+// ============ AUTH GUARD (runs on every protected page) ============
 function requireLogin() {
-  if (localStorage.getItem("loggedIn") !== "true") {
+  if (!localStorage.getItem("token")) {
     window.location.href = "login.html";
   }
 }
 
 function logout() {
-  localStorage.removeItem("loggedIn");
+  localStorage.removeItem("token");
+  localStorage.removeItem("userName");
   window.location.href = "login.html";
 }
 
-// ============ 3. SEARCH FILTER (bugs.html) ============
-// Runs only if a search box with id="searchInput" exists on the page
-const searchInput = document.getElementById("searchInput");
+// Fills in "Logged in as ..." in the sidebar, if that element exists
+function showSidebarUser() {
+  const el = document.getElementById("sidebarUser");
+  if (el) el.textContent = "Logged in as " + (localStorage.getItem("userName") || "User");
+}
 
-if (searchInput) {
-  searchInput.addEventListener("input", function () {
-    const query = searchInput.value.toLowerCase();
-    const rows = document.querySelectorAll(".bug-table tbody tr");
+// ============ LOGIN ============
+const loginForm = document.getElementById("loginForm");
 
-    rows.forEach(function (row) {
-      const rowText = row.textContent.toLowerCase();
-      row.style.display = rowText.includes(query) ? "" : "none";
-    });
+if (loginForm) {
+  loginForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const errorBox = document.getElementById("loginError");
+
+    try {
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        errorBox.textContent = data.message;
+        errorBox.classList.add("show");
+        return;
+      }
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userName", data.user.name);
+      window.location.href = "index.html";
+    } catch (err) {
+      errorBox.textContent = "Could not reach the server. Is it running?";
+      errorBox.classList.add("show");
+    }
   });
+}
+
+// ============ SIGNUP ============
+const signupForm = document.getElementById("signupForm");
+
+if (signupForm) {
+  signupForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const errorBox = document.getElementById("signupError");
+
+    try {
+      const res = await fetch(`${API_BASE}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        errorBox.textContent = data.message;
+        errorBox.classList.add("show");
+        return;
+      }
+
+      alert("Registration Successful! Please login.");
+
+      window.location.href = "login.html";
+
+    } catch (err) {
+      errorBox.textContent = "Could not reach the server.";
+      errorBox.classList.add("show");
+    }
+  });
+}
+
+// ============ FETCH BUGS FROM THE DATABASE ============
+async function getBugs() {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${API_BASE}/bugs`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return [];
+  return res.json();
+}
+
+// Builds one <tr> for a bug. `editable` controls whether status/assignee/delete show
+// (used on bugs.html) or just plain text (used on the dashboard's "Recent Bugs" list).
+function buildBugRow(bug, editable) {
+  const row = document.createElement("tr");
+
+  if (editable) {
+    row.innerHTML = `
+      <td class="bug-id">${bug._id.slice(-6)}</td>
+      <td>${bug.title}</td>
+      <td><span class="badge ${bug.priority}"><span class="dot-indicator"></span>${bug.priority}</span></td>
+      <td>
+        <select class="table-select" onchange="updateBugField('${bug._id}', 'status', this.value)">
+          <option value="Open" ${bug.status === "Open" ? "selected" : ""}>Open</option>
+          <option value="In Progress"  ${bug.status === "In Progress" ? "selected" : ""}>In Progress</option>
+          <option value="Resolved" ${bug.status === "Resolved"? "selected" : ""}>Resolved</option>
+        </select>
+      </td>
+      <td>
+        <input class="table-input" type="text" value="${bug.assignee || ""}"
+          onchange="updateBugField('${bug._id}', 'assignee', this.value)">
+      </td>
+      <td><button class="btn btn-secondary" onclick="deleteBug('${bug._id}')">Delete</button></td>
+    `;
+  } else {
+    row.innerHTML = `
+      <td class="bug-id">${bug._id.slice(-6)}</td>
+      <td>${bug.title}</td>
+      <td><span class="badge ${bug.priority}"><span class="dot-indicator"></span>${bug.priority}</span></td>
+      <td>${bug.status}</td>
+    `;
+  }
+
+  return row;
+}
+
+// ============ BUGS PAGE ============
+async function renderBugsPage() {
+  const tbody = document.getElementById("bugsTableBody");
+  if (!tbody) return; // only run on bugs.html
+
+  const bugs = await getBugs();
+  tbody.innerHTML = "";
+  bugs.forEach((bug) => tbody.appendChild(buildBugRow(bug, true)));
+}
+
+// ============ DASHBOARD PAGE ============
+async function renderDashboard() {
+  const tbody = document.getElementById("recentBugsBody");
+  if (!tbody) return; // only run on index.html
+
+  const bugs = await getBugs();
+
+  document.getElementById("statTotal").textContent = bugs.length;
+  document.getElementById("statOpen").textContent = bugs.filter((b) => b.status === "Open").length;
+  document.getElementById("statProgress").textContent = bugs.filter((b) => b.status === "In Progress").length;
+  document.getElementById("statResolved").textContent = bugs.filter((b) => b.status === "Resolved").length;
+
+  tbody.innerHTML = "";
+  bugs.slice(0, 5).forEach((bug) => tbody.appendChild(buildBugRow(bug, false)));
+}
+
+// ============ UPDATE (status / assignee) ============
+async function updateBugField(id, field, value) {
+  const token = localStorage.getItem("token");
+  await fetch(`${API_BASE}/bugs/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ [field]: value }),
+  });
+}
+
+// ============ DELETE ============
+async function deleteBug(id) {
+  const token = localStorage.getItem("token");
+  await fetch(`${API_BASE}/bugs/${id}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  renderBugsPage();
 }
 
 // ============ REPORT BUG FORM ============
 const reportForm = document.getElementById("reportForm");
 
 if (reportForm) {
-  reportForm.addEventListener("submit", function (event) {
+  reportForm.addEventListener("submit", async function (event) {
     event.preventDefault();
-
-    const bugs = JSON.parse(localStorage.getItem("bugs")) || [];
 
     const severityInput = document.querySelector('input[name="severity"]:checked');
     const severity = severityInput ? severityInput.id.replace("sev-", "") : "medium";
+    const token = localStorage.getItem("token");
+    const messageBox = document.getElementById("reportMessage");
 
-    const newBug = {
-      id: "BUG-" + Math.floor(1000 + Math.random() * 9000),
-      title: document.getElementById("bugTitle").value,
-      description: document.getElementById("bugDescription").value,
-      severity: severity,
-      status: "open",
-      date: new Date().toLocaleDateString()
-    };
+    try {
+      const res = await fetch(`${API_BASE}/bugs`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: document.getElementById("bugTitle").value,
+          description: document.getElementById("bugDescription").value,
+          priority:
+            severity.charAt(0).toUpperCase() +
+            severity.slice(1).toLowerCase(),
+          status: "Open",
+        }),
+      });
 
-    bugs.push(newBug);
-    localStorage.setItem("bugs", JSON.stringify(bugs));
+      if (!res.ok) {
+        const data = await res.json();
+        messageBox.textContent = data.message;
+        messageBox.className = "form-message error show";
+        return;
+      }
 
-    window.location.href = "bugs.html";
+      window.location.href = "bugs.html";
+    } catch (err) {
+      messageBox.textContent = "Could not reach the server.";
+      messageBox.className = "form-message error show";
+    }
   });
 }
 
-// ============ STARTER BUGS (only added once, first time ever) ============
-function seedBugs() {
-  const existing = localStorage.getItem("bugs");
-  if (existing) return; // already has data — don't overwrite it
+// ============ SEARCH FILTER ============
+const searchInput = document.getElementById("searchInput");
 
-  const starterBugs = [
-    { id: "BUG-1001", title: "Login button unresponsive on Safari", severity: "critical", status: "open", date: "7/20/2026" },
-    { id: "BUG-1002", title: "Dashboard chart overflows on mobile", severity: "high", status: "open", date: "7/21/2026" },
-    { id: "BUG-1003", title: "Typo in email notification subject", severity: "low", status: "resolved", date: "7/22/2026" }
-  ];
-
-  localStorage.setItem("bugs", JSON.stringify(starterBugs));
-}
-
-seedBugs(); // run this first, so there's data before renderBugs() reads it
-
-// ============ DISPLAY SAVED BUGS ============
-function renderBugs() {
-  const tbody = document.getElementById("bugsTableBody");
-  if (!tbody) return; // only run this on bugs.html
-
-  const bugs = JSON.parse(localStorage.getItem("bugs")) || [];
-
-  bugs.forEach(function (bug) {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td class="bug-id">${bug.id}</td>
-      <td class="bug-title-cell">${bug.title}</td>
-      <td><span class="badge ${bug.severity}"><span class="dot-indicator"></span>${bug.severity}</span></td>
-      <td><span class="badge status-open">${bug.status}</span></td>
-      <td>${bug.date}</td>
-      <td><button class="btn btn-secondary" onclick="deleteBug('${bug.id}')">Delete</button></td>
-    `;
-    tbody.appendChild(row);
+if (searchInput) {
+  searchInput.addEventListener("input", function () {
+    const query = searchInput.value.toLowerCase();
+    document.querySelectorAll("#bugsTableBody tr").forEach((row) => {
+      row.style.display = row.textContent.toLowerCase().includes(query) ? "" : "none";
+    });
   });
 }
 
-renderBugs(); // runs as soon as script.js loads on bugs.html
+// ============ RUN ON PAGE LOAD ============
+// login.html has none of these ids, so all of this safely does nothing there
+if (!loginForm && !signupForm)  {
+  requireLogin();
+  showSidebarUser();
+  renderDashboard();
+  renderBugsPage();
+}

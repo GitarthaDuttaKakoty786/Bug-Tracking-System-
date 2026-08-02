@@ -2,136 +2,73 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BugTrack — Report Bug</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div class="app">
-
   <aside class="sidebar">
     <div class="logo"><span class="bracket">&lt;/&gt;</span> BugTrack</div>
-
     <nav>
       <div class="nav-group-label">Menu</div>
       <ul>
-        <li><a href="index.html" class="nav-link"><span class="icon">#</span> Dashboard</a></li>
-        <li><a href="bugs.html" class="nav-link"><span class="icon">!</span> All Bugs</a></li>
-        <li><a href="report-bug.html" class="nav-link active"><span class="icon">+</span> Report Bug</a></li>
+        <li><a href="index.html" class="nav-link">Dashboard</a></li>
+        <li><a href="bugs.html" class="nav-link">All Bugs</a></li>
+        <li><a href="report-bug.html" class="nav-link active">Report Bug</a></li>
       </ul>
     </nav>
-
-    <!-- <div class="sidebar-footer">Logged in as A. Sharma</div>-->
     <div class="sidebar-footer">
-  Logged in as A. Sharma
-  <button class="power-btn" onclick="logout()" style="margin-top:8px;">⏻ Log Out</button>
-</div>
+      <div id="sidebarUser">Loading...</div>
+      <button class="btn btn-secondary" onclick="logout()" style="margin-top:10px; width:100%; justify-content:center;">Log Out</button>
+    </div>
   </aside>
 
   <main class="main">
-
-    <div class="topbar">
-      <div>
-        <h1>Report a Bug</h1>
-        <div class="subtitle">Fill in the details below so the team can reproduce and fix it</div>
-      </div>
-    </div>
+    <div class="topbar"><div><h1>Report a Bug</h1><div class="subtitle">Saved directly to the database</div></div></div>
 
     <div class="window">
       <div class="window-titlebar">
-        <div class="dots">
-          <span class="dot red"></span>
-          <span class="dot amber"></span>
-          <span class="dot green"></span>
-        </div>
+        <div class="dots"><span class="dot red"></span><span class="dot amber"></span><span class="dot green"></span></div>
         <span class="window-title">bugtrack — new-bug-form</span>
       </div>
 
       <div class="window-body">
+        <p id="reportMessage" class="form-message"></p>
 
-        <!-- This is a static prototype form — it does not submit anywhere yet -->
-       <form id="reportForm">
-
+        <form id="reportForm">
           <div class="form-grid">
-
             <div class="form-field full">
-              <label for="title">Bug Title</label>
-             <input type="text" id="bugTitle" placeholder="e.g. Login button unresponsive on Safari">
+              <label for="bugTitle">Bug Title</label>
+              <input type="text" id="bugTitle" required>
             </div>
 
             <div class="form-field full">
-              <label for="description">Description</label>
-              <textarea id="bugDescription" placeholder="Describe what happened..."></textarea>
-            </div>
-
-            <div class="form-field full">
-              <label for="steps">Steps to Reproduce</label>
-              <textarea id="steps" placeholder="1. Go to login page&#10;2. Enter valid credentials&#10;3. Click Login on Safari"></textarea>
+              <label for="bugDescription">Description</label>
+              <textarea id="bugDescription"></textarea>
             </div>
 
             <div class="form-field full">
               <label>Severity</label>
               <div class="severity-choices">
-
-                <div class="severity-choice">
-                  <input type="radio" name="severity" id="sev-low">
-                  <label for="sev-low">Low</label>
-                </div>
-
-                <div class="severity-choice">
-                  <input type="radio" name="severity" id="sev-medium">
-                  <label for="sev-medium">Medium</label>
-                </div>
-
-                <div class="severity-choice">
-                  <input type="radio" name="severity" id="sev-high">
-                  <label for="sev-high">High</label>
-                </div>
-
-                <div class="severity-choice">
-                  <input type="radio" name="severity" id="sev-critical" checked>
-                  <label for="sev-critical">Critical</label>
-                </div>
-
+                <div class="severity-choice"><input type="radio" name="severity" id="sev-low"><label for="sev-low">Low</label></div>
+                <div class="severity-choice"><input type="radio" name="severity" id="sev-medium" checked><label for="sev-medium">Medium</label></div>
+                <div class="severity-choice"><input type="radio" name="severity" id="sev-high"><label for="sev-high">High</label></div>
+                <div class="severity-choice"><input type="radio" name="severity" id="sev-critical"><label for="sev-critical">Critical</label></div>
               </div>
             </div>
-
-            <div class="form-field">
-              <label for="assignee">Assign To</label>
-              <select id="assignee">
-                <option>A. Sharma</option>
-                <option>R. Iyer</option>
-                <option>M. Khan</option>
-                <option>S. Verma</option>
-              </select>
-            </div>
-
-            <div class="form-field">
-              <label for="attachment">Attachment</label>
-              <input type="file" id="attachment">
-              <span class="hint">Screenshot or screen recording, optional</span>
-            </div>
-
           </div>
 
           <div class="form-actions">
             <button type="submit" class="btn btn-primary">Submit Bug Report</button>
             <a href="bugs.html" class="btn btn-secondary">Cancel</a>
           </div>
-
         </form>
-
       </div>
     </div>
-
   </main>
 </div>
+
 <script src="script.js"></script>
-<script>requireLogin();</script>
 </body>
 </html>
