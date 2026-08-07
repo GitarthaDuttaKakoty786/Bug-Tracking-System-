@@ -1,3 +1,11 @@
+const dns = require("dns");
+
+// Force Node.js to prefer IPv4 over IPv6 when resolving addresses
+dns.setDefaultResultOrder("ipv4first");
+
+// Override system DNS with Google Public DNS servers
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
+
 const cors = require("cors");
 const express = require("express");
 const dotenv = require("dotenv");
