@@ -19,27 +19,38 @@ connectDB();              // Connect to MongoDB
 
 const app = express();    // Create Express application
 
-// Allowed origins: localhost (all ports), file:// (null), and any extra
-// origins listed in ALLOWED_ORIGINS env var (comma-separated).
-// Example .env:  ALLOWED_ORIGINS=https://my-app.onrender.com,https://my-app.netlify.app
-const extraOrigins = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
+// ── CORS ──────────────────────────────────────────────────────────────────
+// Reads ALLOWED_ORIGINS from env (comma-separated list of allowed URLs).
+// Always allows: localhost (any port) and file:// pages (null origin).
+// Set in Render dashboard: ALLOWED_ORIGINS=https://your-app.vercel.app
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim().replace(/\/$/, ""))
     : [];
 
-app.use(cors({
+const corsOptions = {
     origin: function (origin, callback) {
-        // Always allow: no-origin requests, file:// pages, and localhost dev server
-        if (!origin || origin === "null" || /^http:\/\/localhost(:\d+)?$/.test(origin)) {
-            return callback(null, true);
-        }
-        // Allow any origin explicitly listed in ALLOWED_ORIGINS
-        if (extraOrigins.includes(origin)) {
-            return callback(null, true);
-        }
-        callback(new Error(`CORS: origin "${origin}" not allowed`));
+        // No origin = server-to-server or curl — allow
+        if (!origin) return callback(null, true);
+        // file:// pages send origin "null" as a string
+        if (origin === "null") return callback(null, true);
+        // Any localhost port (dev server)
+        if (/^https?:\/\/localhost(:\d+)?$/.test(origin)) return callback(null, true);
+        // Strip trailing slash from incoming origin before comparing
+        const cleanOrigin = origin.replace(/\/$/, "");
+        if (allowedOrigins.includes(cleanOrigin)) return callback(null, true);
+        // Log blocked origin to Render logs for easier debugging
+        console.warn(`CORS blocked: "${origin}" | Allowed: ${allowedOrigins.join(", ") || "none"}`);
+        callback(null, false);   // Return false (not an error) so preflight gets 204 not 500
     },
-    credentials: true
-}));
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+const corsMiddleware = cors(corsOptions);
+app.use(corsMiddleware);
+app.options("*", corsMiddleware);   // Handle preflight for all routes
+// ──────────────────────────────────────────────────────────────────────────
 
 // Middleware
 app.use(express.json());
