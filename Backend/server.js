@@ -49,7 +49,6 @@ const corsOptions = {
 
 const corsMiddleware = cors(corsOptions);
 app.use(corsMiddleware);
-app.options("*", corsMiddleware);   // Handle preflight for all routes
 // ──────────────────────────────────────────────────────────────────────────
 
 // Middleware
