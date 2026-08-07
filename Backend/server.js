@@ -19,7 +19,27 @@ connectDB();              // Connect to MongoDB
 
 const app = express();    // Create Express application
 
-app.use(cors());
+// Allowed origins: localhost (all ports), file:// (null), and any extra
+// origins listed in ALLOWED_ORIGINS env var (comma-separated).
+// Example .env:  ALLOWED_ORIGINS=https://my-app.onrender.com,https://my-app.netlify.app
+const extraOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
+    : [];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        // Always allow: no-origin requests, file:// pages, and localhost dev server
+        if (!origin || origin === "null" || /^http:\/\/localhost(:\d+)?$/.test(origin)) {
+            return callback(null, true);
+        }
+        // Allow any origin explicitly listed in ALLOWED_ORIGINS
+        if (extraOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        callback(new Error(`CORS: origin "${origin}" not allowed`));
+    },
+    credentials: true
+}));
 
 // Middleware
 app.use(express.json());
